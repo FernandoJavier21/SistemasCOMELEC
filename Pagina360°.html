@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Online - Amarillo & Azul</title>
+  <style>
+    /* (Header, layout, and hero styles: copiados del código proporcionado) */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
+    .header { background-color: #0056b3; color: white; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.8rem; font-weight: bold; color: #FFD700; text-decoration: none; display: flex; align-items: center; }
+    .logo img { margin-right: 10px; }
+    .nav { display: flex; align-items: center; gap: 1.5rem; }
+    .search-container { display: flex; align-items: center; width: 100%; max-width: 500px; }
+    .search-input { width: 100%; padding: 0.7rem 1rem; border: none; border-radius: 25px 0 0 25px; font-size: 1rem; outline: none; transition: all 0.3s ease; }
+    .search-input:focus { box-shadow: 0 0 0 2px #FFD700; }
+    .search-button { background-color: #FFD700; color: #0056b3; border: none; padding: 0.7rem 1.2rem; border-radius: 0 25px 25px 0; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
+    .search-button:hover { background-color: #ffcc00; }
+    .main-content { padding: 2rem; text-align: center; }
+    .hero { background: linear-gradient(135deg, #0056b3, #003366); color: white; padding: 4rem 2rem; border-radius: 10px; margin-bottom: 2rem; position: relative; overflow: hidden; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; position: relative; z-index: 2; }
+    .hero p { max-width: 600px; margin: 0 auto 1.5rem; position: relative; z-index: 2; }
+    .hero::before { content: ""; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background-color: rgba(255, 215, 0, 0.1); border-radius: 50%; z-index: 1; }
+    .hero::after { content: ""; position: absolute; bottom: -80px; left: -80px; width: 300px; height: 300px; background-color: rgba(255, 215, 0, 0.05); border-radius: 50%; z-index: 1; }
+    .btn { background-color: #FFD700; color: #0056b3; padding: 0.8rem 1.5rem; border: none; border-radius: 25px; font-weight: bold; text-decoration: none; display: inline-block; transition: all 0.3s ease; margin: 0.5rem; cursor: pointer; }
+    .btn:hover { background-color: #ffcc00; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+
+    .product-gallery { display: flex; flex-direction: column; align-items: center; }
+    .main-image-container { position: relative; width: 300px; }
+    #main-product-image { width: 100%; border-radius: 8px; }
+    .thumbnail-container { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+    .thumbnail img { width: 60px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; }
+    .thumbnail.active img { border-color: #FFD700; }
+    .btn-360 { background-color: #0056b3; color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; }
+    .modal-360 { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
+    .modal-content { position: relative; background: white; padding: 1rem; border-radius: 10px; }
+    .modal-content img { max-width: 100%; }
+    .close-modal { position: absolute; top: 10px; right: 15px; font-size: 2rem; cursor: pointer; }
+    .zoom-result { position: absolute; width: 300px; height: 300px; border: 2px solid #FFD700; background-repeat: no-repeat; pointer-events: none; display: none; z-index: 5; border-radius: 8px; }
+    .size-selector { margin-top: 2rem; }
+    .sizes { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .size-btn { padding: 0.5rem 1rem; border: 2px solid #0056b3; background: white; color: #0056b3; border-radius: 25px; cursor: pointer; transition: 0.3s; }
+    .size-btn:hover { background-color: #0056b3; color: white; }
+    .size-btn.selected { background-color: #FFD700; color: #0056b3; }
+    .size-btn.unavailable { opacity: 0.5; cursor: not-allowed; border-color: #999; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="#" class="logo">
+      <img src="https://placehold.co/40x40" alt="Logo"> Tienda de Prueba
+    </a>
+    <div class="nav">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Buscar productos...">
+        <button class="search-button">Buscar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <h1>Smartphone Ultra</h1>
+      <p>Imágenes con zoom y vista 360° para conocer cada detalle. ¡Selecciona tu modelo preferido!</p>
+    </section>
+
+    <div class="product-gallery">
+      <div class="main-image-container">
+        <img id="main-product-image" src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/57369734-1cc3-4595-b8c2-3466316cb5a3.png" alt="Producto principal">
+        <div class="zoom-result" id="zoom-result"></div>
+      </div>
+      <div class="thumbnail-container">
+        <div class="thumbnail active" data-image="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/57369734-1cc3-4595-b8c2-3466316cb5a3.png">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/57369734-1cc3-4595-b8c2-3466316cb5a3.png" alt="Miniatura 1">
+        </div>
+        <div class="thumbnail" data-image="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/dafac243-0f14-4ec5-a776-0b18c2ded7c2.png">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/dafac243-0f14-4ec5-a776-0b18c2ded7c2.png" alt="Miniatura 2">
+        </div>
+        <button class="btn-360">Vista 360°</button>
+      </div>
+      <div class="size-selector">
+        <h3>Selecciona el modelo:</h3>
+        <div class="sizes">
+          <button class="size-btn" data-size="Lite">Lite</button>
+          <button class="size-btn" data-size="Standard">Standard</button>
+          <button class="size-btn unavailable" data-size="Pro">Pro</button>
+          <button class="size-btn" data-size="Ultra">Ultra</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-360" id="modal-360">
+    <div class="modal-content">
+      <span class="close-modal" id="close-360">&times;</span>
+      <img src="https://cdn.pixabay.com/photo/2023/01/27/12/28/ai-generated-7747357_1280.gif" alt="Vista 360° del producto">
+    </div>
+  </div>
+
+  <script>
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('main-product-image');
+
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', () => {
+        thumbnails.forEach(t => t.classList.remove('active'));
+        thumbnail.classList.add('active');
+        mainImage.src = thumbnail.dataset.image;
+      });
+    });
+
+    const modal360 = document.getElementById('modal-360');
+    const btn360 = document.querySelector('.btn-360');
+    const closeBtn = document.getElementById('close-360');
+
+    btn360.addEventListener('click', () => {
+      modal360.style.display = 'flex';
+    });
+    closeBtn.addEventListener('click', () => {
+      modal360.style.display = 'none';
+    });
+
+    const zoomResult = document.getElementById('zoom-result');
+    const mainContainer = document.querySelector('.main-image-container');
+
+    mainContainer.addEventListener('mousemove', function(e) {
+      const rect = mainContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const imgSrc = mainImage.src;
+
+      zoomResult.style.backgroundImage = `url('${imgSrc}')`;
+      zoomResult.style.backgroundSize = mainImage.width * 2 + 'px ' + mainImage.height * 2 + 'px';
+      zoomResult.style.left = x - 150 + 'px';
+      zoomResult.style.top = y - 150 + 'px';
+      zoomResult.style.display = 'block';
+    });
+
+    mainContainer.addEventListener('mouseleave', function() {
+      zoomResult.style.display = 'none';
+    });
+
+    const sizeButtons = document.querySelectorAll('.size-btn');
+    sizeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.classList.contains('unavailable')) {
+          alert('Lo sentimos, este modelo no está disponible.');
+          return;
+        }
+        sizeButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+      });
+    });
+  </script>
+</body>
+</html>
